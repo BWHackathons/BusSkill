@@ -165,15 +165,15 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                         }
                     }
                 })  
-        //}).then((location) => {
-            //return gmapi.geocode(location).asPromise()
         }).then((currentLocation) => {
             if(!currentLocation)
                 return;
+        }).then((currentLocation) => {       
+           return gmapi.geocode(response).asPromise()
             console.log(location);
             if(location) {
                 //TODO: Google API Calls HERE
-                
+                var curLatLong=[response.json.results.geometry.location.lat,response.json.results.geometry.location.lng];
                 var route = "4";
                 var stop = "Union Street (West of University)";
                 var time = "3 PM";
