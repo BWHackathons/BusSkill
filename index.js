@@ -88,6 +88,7 @@ function buildLocationPermissionResponseCard() {
 // --------------- Functions that control the skill's behavior -----------------------
 
 function getWelcomeResponse(callback) {
+    console.log; //J
     // If we wanted to initialize the session to have some attributes we could add those here.
     const sessionAttributes = {};
     const cardTitle = 'Welcome to BusPal';
