@@ -2,7 +2,8 @@
 
 // -------------------------------- Node Modules ------------------------------------
 var _ = require('lodash');
-const loc = require('../../helpers/Location');
+const loc = require('helpers/Location');
+const request = require('request');
 
 // -------------------------------- Constants ------------------------------------
 const KEYS = require("./keys.js");
@@ -172,12 +173,12 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
             }
         }).then(() => {
             if(shouldSendAuth){
-                var card = resp.buildLocationPermissionResponseCard();
-                var speech = resp.buildSpeechletResponseSpeech("PlainText", "To do that, please open your Alexa app and grant location permission using the card I just sent you!", "PlainText", "");
-                callback({}, resp.buildCustomSpeechletResponse(card, speech));
+                var card = buildLocationPermissionResponseCard();
+                var speech = buildSpeechletResponseSpeech("PlainText", "To do that, please open your Alexa app and grant location permission using the card I just sent you!", "PlainText", "");
+                callback({}, buildCustomSpeechletResponse(card, speech));
             }
             else
-                callback({}, resp.buildSpeechletResponse(cardTitle, speechOutput, reprompt, shouldEndSession));
+                callback({}, buildSpeechletResponse(cardTitle, speechOutput, reprompt, shouldEndSession));
             resolve();
         });
     }
