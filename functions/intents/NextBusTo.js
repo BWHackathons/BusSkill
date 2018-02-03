@@ -1,5 +1,5 @@
 const lib = require('lib');
-const gmapi = requrire('@google/maps').createClient({
+const gmapi = require('@google/maps').createClient({
 	key: process.env.gmapiKey
 });
 
