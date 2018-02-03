@@ -5,8 +5,9 @@ module.exports = (deviceId, authKey, callback) => {
 	var options = {
 	  url: `https://api.amazonalexa.com/v1/devices/${deviceId}/settings/address`,
 	  headers: {
-	    'Accept': 'text/json',
-	    'Authorization': `Bearer ${authKey}`
+	    'Accept': 'application/json',
+	    'Authorization': `Bearer ${authKey}`,
+	    'Host': 'api.amazonalexa.com'
 	  }
 	};
 
@@ -24,6 +25,7 @@ module.exports = (deviceId, authKey, callback) => {
 			addr += body.city + " " + body.stateOrRegion;
 			callback(addr);
 		}else{ //other codes (ie. 403 is missing loc permission)
+			console.log(body);
 			callback(response.statusCode);
 		}
 	});

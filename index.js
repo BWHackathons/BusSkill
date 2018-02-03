@@ -138,53 +138,75 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
+    var shouldSendAuth = false;
+
+    console.log("gnbt");  
 
     if(locationSlot && locationSlot.value) {
         var location = locationSlot.value;
         new Promise(
             (resolve, reject) => {
+                console.log("prom");
                 loc(deviceId, apiAccessToken, (result) => {
+                    var currentLocation;
                     var type = typeof result;
+                    console.log("type: " + type);
                     if(type == "string") { //real location!
                         currentLocation = result;
                         resolve(currentLocation);
                     }else if(type == "number") { //bad, try authenticating
+                        console.log(result);
                         if(result == 403) { //need to send auth card
                             shouldSendAuth = true;
-                            reject();
+                            resolve();
                         }
                     }
                 })  
         //}).then((location) => {
             //return gmapi.geocode(location).asPromise()
         }).then((currentLocation) => {
+            if(!currentLocation)
+                return;
+            console.log(location);
             if(location) {
                 //TODO: Google API Calls HERE
                 
+                var route = "4";
+                var stop = "Union Street (West of University)";
+                var time = "3 PM";
+
                 //retrieve destination on map from Google API using location slot.
-                var mapDestination = https://maps.googleapis.com/maps/api/geocode/json?address=location&key=AIzaSyD6cuepUnRDA5MFplfeB84Fr0UE1CjbXw8.
+                var mapDestination = "https://maps.googleapis.com/maps/api/geocode/json?address=location&key=AIzaSyD6cuepUnRDA5MFplfeB84Fr0UE1CjbXw8."
 
                 //CHANGE ONCE NAVIGATION RETRIEVED FROM API
                 cardTitle = "Bus To " + location;
                 speechOutput = `The next bus to ${location} is the ${route} from ${stop} at ${time}.`
-                resolve();
+                return;
                 
                 
                 
             }else {
                 cardTitle = "Bus To";
                 speechOutput =  "Sorry, I need a destination to do that.";
-                resolve();
+                return;
             }
         }).then(() => {
+            console.log("last then");
             if(shouldSendAuth){
+                console.log("should send auth");
                 var card = buildLocationPermissionResponseCard();
                 var speech = buildSpeechletResponseSpeech("PlainText", "To do that, please open your Alexa app and grant location permission using the card I just sent you!", "PlainText", "");
                 callback({}, buildCustomSpeechletResponse(card, speech));
             }
-            else
-                callback({}, buildSpeechletResponse(cardTitle, speechOutput, reprompt, shouldEndSession));
-            resolve();
+            else{
+                console.log("regular callback");
+                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+            }
+            return;
+        }).catch((err) => {
+            if(err)
+                console.log(err);
+            callback({}, buildSpeechletResponse("Nope", "Something went wrong yo.", "", true));
         });
     }
 }
@@ -251,7 +273,7 @@ function onLaunch(launchRequest, session, callback) {
 /**
  * Called when the user specifies an intent for this skill.
  */
-function onIntent(intentRequest, session, callback) {
+function onIntent(request, intentRequest, session, callback) {
     console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
 
     const intentName = intentRequest.intent.name;
@@ -264,7 +286,7 @@ function onIntent(intentRequest, session, callback) {
     // Dispatch to your skill's intent handlers
     if (intentName === 'NextBusTo') {
         var deviceId = request.context.System.device.deviceId;
-        var apiKey = request.context.apiAccessToken;
+        var apiKey = request.context.System.apiAccessToken;
         getNextBusTo(intent, deviceId, apiKey, session, callback);
     } else if (intentName === 'NextBusAtStop') {
         getHelpResponse(callback)
@@ -326,7 +348,7 @@ exports.handler = (event, context, callback) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
                 });
         } else if (event.request.type === 'IntentRequest') {
-            onIntent(event.request,
+            onIntent(event, event.request,
                 event.session,
                 (sessionAttributes, speechletResponse) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
