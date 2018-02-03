@@ -27,7 +27,7 @@ module.exports = (name = '', slots = {}, request = {}, context, callback) => {
   }, {});
 
   if(request.intent.name == "NextBusTo") {
-    lib[`${context.service.identifier}.intents.${request.intent.name}`](request, (err, result) => {
+    lib[`${context.service.identifier}.intents.${request.intent.name}`](request.context.System.device.deviceId, request.context.apiAccessToken, (err, result) => {
 
       return callback(null, result);
 

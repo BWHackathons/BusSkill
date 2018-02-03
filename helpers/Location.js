@@ -14,10 +14,7 @@ module.exports = (deviceId, authKey, callback) => {
 		if(error)
 			callback(error);
 
-		if(response.statusCode == 403) { //user has not granted permission
-
-			callback(null);
-		}else if(response.statusCode == 200) { //OK
+		if(response.statusCode == 200) { //OK
 			var addr = body.addressLine1 + " ";
 			if(body.addressLine2)
 				addr += body.addressLine2 + " ";
@@ -26,7 +23,7 @@ module.exports = (deviceId, authKey, callback) => {
 
 			addr += body.city + " " + body.stateOrRegion;
 			callback(addr);
-		}else{ //other codes
+		}else{ //other codes (ie. 403 is missing loc permission)
 			callback(response.statusCode);
 		}
 	});
