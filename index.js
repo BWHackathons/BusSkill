@@ -3,7 +3,7 @@
 // -------------------------------- Node Modules ------------------------------------
 var _ = require('lodash');
 const loc = require('helpers/Location');
-const request = require('request');
+//const req = require('request');
 
 // -------------------------------- Constants ------------------------------------
 const KEYS = require("./keys.js");
@@ -246,7 +246,7 @@ function onLaunch(launchRequest, session, callback) {
 /**
  * Called when the user specifies an intent for this skill.
  */
-function onIntent(intentRequest, session, callback) {
+function onIntent(request, intentRequest, session, callback) {
     console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
 
     const intentName = intentRequest.intent.name;
@@ -321,7 +321,7 @@ exports.handler = (event, context, callback) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
                 });
         } else if (event.request.type === 'IntentRequest') {
-            onIntent(event.request,
+            onIntent(event, event.request,
                 event.session,
                 (sessionAttributes, speechletResponse) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
