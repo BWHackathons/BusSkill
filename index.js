@@ -132,20 +132,20 @@ function getHelpResponse(callback)
 function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
 {
     let cardTitle = intent.name;
-    const destinationSlot = intent.slots.destination;
+    const locationSlot = intent.slots.location;
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
 
-    if(destinationSlot && destinationSlot.value) {
-        var destination = destinationSlot.value;
+    if(locationSlot && locationSlot.value) {
+        var location = locationSlot.value;
         new Promise(
             (resolve, reject) => {
                 loc.getLocation(deviceId, apiAccessToken, (result) => {
                     var type = typeof result;
                     if(type == "string") { //real location!
-                        location = result;
-                        resolve(location);
+                        currentLocation = result;
+                        resolve(currentLocation);
                     }else if(type == "number") { //bad, try authenticating
                         if(result == 403) { //need to send auth card
                             shouldSendAuth = true;
@@ -155,15 +155,15 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                 })  
         //}).then((location) => {
             //return gmapi.geocode(location).asPromise()
-        }).then((location) => {
-            if(destination) {
+        }).then((currentLocation) => {
+            if(location) {
                 //TODO: Google API Calls HERE
                 var route = "4";
                 var stop = "Street Street (East Side)";
                 var time = "11:59";
 
-                cardTitle = "Bus To " + destination;
-                speechOutput = `The next bus to ${destination} is the ${route} from ${stop} at ${time}.`
+                cardTitle = "Bus To " + location;
+                speechOutput = `The next bus to ${location} is the ${route} from ${stop} at ${time}.`
                 resolve();
             }else {
                 cardTitle = "Bus To";
