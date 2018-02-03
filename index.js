@@ -3,7 +3,7 @@
 // -------------------------------- Node Modules ------------------------------------
 var _ = require('lodash');
 const loc = require('helpers/Location');
-//const req = require('request');
+const request = require('request');
 
 // -------------------------------- Constants ------------------------------------
 const KEYS = require("./keys.js");
@@ -159,13 +159,17 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
         }).then((currentLocation) => {
             if(location) {
                 //TODO: Google API Calls HERE
-                var route = "4";
-                var stop = "Street Street (East Side)";
-                var time = "11:59";
+                
+                //retrieve destination on map from Google API using location slot.
+                var mapDestination = https://maps.googleapis.com/maps/api/geocode/json?address=location&key=AIzaSyD6cuepUnRDA5MFplfeB84Fr0UE1CjbXw8.
 
+                //CHANGE ONCE NAVIGATION RETRIEVED FROM API
                 cardTitle = "Bus To " + location;
                 speechOutput = `The next bus to ${location} is the ${route} from ${stop} at ${time}.`
                 resolve();
+                
+                
+                
             }else {
                 cardTitle = "Bus To";
                 speechOutput =  "Sorry, I need a destination to do that.";
@@ -246,7 +250,7 @@ function onLaunch(launchRequest, session, callback) {
 /**
  * Called when the user specifies an intent for this skill.
  */
-function onIntent(request, intentRequest, session, callback) {
+function onIntent(intentRequest, session, callback) {
     console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
 
     const intentName = intentRequest.intent.name;
@@ -321,7 +325,7 @@ exports.handler = (event, context, callback) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
                 });
         } else if (event.request.type === 'IntentRequest') {
-            onIntent(event, event.request,
+            onIntent(event.request,
                 event.session,
                 (sessionAttributes, speechletResponse) => {
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
