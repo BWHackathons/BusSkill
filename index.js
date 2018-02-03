@@ -142,7 +142,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
         var location = locationSlot.value;
         new Promise(
             (resolve, reject) => {
-                loc.getLocation(deviceId, apiAccessToken, (result) => {
+                loc(deviceId, apiAccessToken, (result) => {
                     var type = typeof result;
                     if(type == "string") { //real location!
                         currentLocation = result;
