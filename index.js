@@ -1,12 +1,15 @@
 'use strict';
 
+// -------------------------------- Constants ------------------------------------
+const KEYS = require("./keys.js");
+
 // -------------------------------- Node Modules ------------------------------------
 var _ = require('lodash');
 const loc = require('helpers/Location');
 const request = require('request');
-
-// -------------------------------- Constants ------------------------------------
-const KEYS = require("./keys.js");
+const gmapi = require('@google/maps').createClient({
+    key: KEYS.gapi
+});
 
 // --------------- Helpers that build all of the responses -----------------------
 
@@ -176,7 +179,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                 var time = "3 PM";
 
                 //retrieve destination on map from Google API using location slot.
-                var mapDestination = "https://maps.googleapis.com/maps/api/geocode/json?address=location&key=AIzaSyD6cuepUnRDA5MFplfeB84Fr0UE1CjbXw8."
+                var mapDestination = "https://maps.googleapis.com/maps/api/geocode/json?address=location&key=."
 
                 //CHANGE ONCE NAVIGATION RETRIEVED FROM API
                 cardTitle = "Bus To " + location;
