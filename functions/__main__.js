@@ -26,20 +26,20 @@ module.exports = (name = '', slots = {}, request = {}, context, callback) => {
     return params;
   }, {});
 
-  lib[`${context.service.identifier}.intents.${request.intent.name}`](params, (err, result) => {
+  if(request.intent.name == "NextBusTo") {
+    lib[`${context.service.identifier}.intents.${request.intent.name}`](request, (err, result) => {
 
-    return callback(null, {
-      version: context.service.environment,
-      sessionAttributes: {},
-      response: {
-        outputSpeech: {
-          type: 'PlainText',
-          text: err ? `Error: ${err.message}` : result
-        },
-        shouldEndSession: true
-      }
+      return callback(null, result);
+
     });
+  }else{
+    lib[`${context.service.identifier}.intents.${request.intent.name}`](params, (err, result) => {
 
-  });
+      return callback(null, result);
+
+    });
+  }
+
+  
 
 };
