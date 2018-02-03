@@ -3,23 +3,11 @@
   "version": "0.0.0",
   "description": "",
   "author": "",
-  "main": "functions/__main__.js",
+  "main": "index.js",
   "dependencies": {
     "@google/maps": "^0.4.5",
-    "lib": "^3.0.1",
     "lodash": "^4.17.4",
     "request": "^2.83.0"
   },
   "private": true,
-  "stdlib": {
-    "build": "faaslang",
-    "name": "bwiebe/BusSkill",
-    "timeout": 10000,
-    "publish": true,
-    "personalize": {
-      "keys": [],
-      "user": []
-    },
-    "source": "alexa"
-  }
 }
