@@ -194,49 +194,50 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
             if(location && _.has(result1, "geometry.location.lat") && _.has(result1, "geometry.location.lng") && _.has(result2, "geometry.location.lat") && _.has(result2, "geometry.location.lng")) {
                 var curLatLong=[result1.geometry.location.lat, result1.geometry.location.lng];
                 var dstLatLong=[result2.geometry.location.lat, result2.geometry.location.lng];
-                var route = "4";
-                var stop = "Union Street (West of University)";
-                var time = "3 PM";
 
-                //retrieve destination on map from Google API using location slot.
-                var mapDestination = "https://maps.googleapis.com/maps/api/geocode/json?address=location&key=."
-
-                //CHANGE ONCE NAVIGATION RETRIEVED FROM API
-                var directionsService = new google.maps.DirectionsService(),
-
-                function calcRoute(){
-
+                return [curLatLong, dstLatLong];
+            }else{
+                return null;
+            }
+        }).then((locs) => {
+            if(locs){
                 var request = {
-                    origin:currentLocation,
-                    destination:mapDestination,
-                    key:AIzaSyClF1oblEyOcJyieku_GqZna_dbqGeCNX4,
-                    mode:transit,
+                    origin: locs[0],
+                    destination: locs[1],
+                    mode: "transit"
                     };
+                return gmapi.directions(request).asPromise();
 
-                directionsService.route(request, function(result, status) {
-                    if(status== 'OK'){
-                    var routeDetails = result.routes[0].legs[0].steps[0].TransitDetails;
+            }else{
+                return null;
+            }
+        }).then((response) => {
+            console.log(JSON.stringify(response));
+            if(response){
+                var steps = response.json.routes[0].legs[0].steps;
+                var idx = 0;
+                while(idx < steps.length && steps[idx].travel_mode != "TRANSIT"){
+                    idx++;
+                }
+                if(idx >= steps.length){
+                    cardTitle = "Bus To " + location;
+                    speechOutput = "The destination you requested has no available transit route.";
+                }else{
+                    var routeDetails = steps[idx].transit_details;
                     var destinationStopName= routeDetails.arrival_stop.name;
                     var startingStopName=routeDetails.departure_stop.name;
                     var arrivalTime=routeDetails.arrival_time.text;
                     var departureTime=routeDetails.departure_time.text;
-                    var transitLine=routeDetails.line.name;
+                    var transitLine=routeDetails.line.short_name;
                         
                     cardTitle = "Bus To " + location;
-                    speechOutput = `The next bus to ${location} is the ${transitLine} from ${startingStopName} at ${departureTime}.`
-                    return;
-                    }
-                });
-                    
-
+                    speechOutput = `The next bus to ${location} is the ${transitLine} from ${startingStopName} at ${departureTime}.`;
+                }
                 
-                
-                
-            }else {
+            }else{
                 cardTitle = "Bus To";
                 speechOutput =  "Sorry, I encountered an error when determining your requested locations. semicolon right paren";
-                return;
-            }
+            }                    
         }).then(() => {
             console.log("last then");
             if(shouldSendAuth){
