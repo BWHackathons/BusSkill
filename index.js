@@ -99,7 +99,7 @@ function getWelcomeResponse(callback) {
     const sessionAttributes = {};
     const cardTitle = 'Welcome to BusPal';
     const speechOutput = 'Welcome to BusPal. ' +
-        'You can ask me questions about busses in any transit system!';
+        'You can ask me questions about Kingston Transit!';
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
     const repromptText = 'You can ask me questions about busses! ' +
@@ -258,7 +258,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
     }
 }
 
-function WhenToLeave(intent, deviceId, apiAccessToken, session, callback)
+function getWhenToLeave(intent, deviceId, apiAccessToken, session, callback)
 {
     let cardTitle = intent.name;
     const locationSlot = intent.slots.location;
@@ -518,8 +518,8 @@ function getRouteSteps(intent, deviceId, apiAccessToken, session, callback)
 
                 return sms(phoneSlot.value, output).then(() => {
                     cardTitle = "Steps to " + location;
-                    speechType = "SSML";
-                    speechOutput = `<ssml>The next steps to get to ${location} have been sent to <say-as interpret-as='telephone'>${phoneSlot.value}</say-as>.</ssml>`;
+                    speechType = "PlainText";
+                    speechOutput = `The next steps to get to ${location} have been sent to ${phoneSlot.value}.`;
                 }).catch(() => {
                     cardTitle = "Steps to " + location;
                     speechOutput = `Sorry, the next steps to get to ${location} could not be sent to ${phoneSlot.value}.`;
@@ -643,9 +643,9 @@ function onIntent(request, intentRequest, session, callback) {
     }else if(intentName === 'GetBusAtTime'){
         getHelpResponse(callback);
     } else if(intentName === 'WhenToLeave'){
-        getHelpResponse(callback);
-    } else if(intentName === 'WhenToLeave'){
-        getHelpResponse(callback);
+        var deviceId = request.context.System.device.deviceId;
+        var apiKey = request.context.System.apiAccessToken;
+        getWhenToLeave(intent, deviceId, apiKey, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getHelpResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
