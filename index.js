@@ -202,9 +202,33 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                 var mapDestination = "https://maps.googleapis.com/maps/api/geocode/json?address=location&key=."
 
                 //CHANGE ONCE NAVIGATION RETRIEVED FROM API
-                cardTitle = "Bus To " + location;
-                speechOutput = `The next bus to ${location} is the ${route} from ${stop} at ${time}.`
-                return;
+                var directionsService = new google.maps.DirectionsService(),
+
+                function calcRoute(){
+
+                var request = {
+                    origin:currentLocation,
+                    destination:mapDestination,
+                    key:AIzaSyClF1oblEyOcJyieku_GqZna_dbqGeCNX4,
+                    mode:transit,
+                    };
+
+                directionsService.route(request, function(result, status) {
+                    if(status== 'OK'){
+                    var routeDetails = result.routes[0].legs[0].steps[0].TransitDetails;
+                    var destinationStopName= routeDetails.arrival_stop.name;
+                    var startingStopName=routeDetails.departure_stop.name;
+                    var arrivalTime=routeDetails.arrival_time.text;
+                    var departureTime=routeDetails.departure_time.text;
+                    var transitLine=routeDetails.line.name;
+                        
+                    cardTitle = "Bus To " + location;
+                    speechOutput = `The next bus to ${location} is the ${transitLine} from ${startingStopName} at ${departureTime}.`
+                    return;
+                    }
+                });
+                    
+
                 
                 
                 
