@@ -148,6 +148,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
 
     if(locationSlot && locationSlot.value) {
         var location = locationSlot.value;
+        var response1;
         new Promise(
             (resolve, reject) => {
                 console.log("prom");
@@ -174,13 +175,25 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                 return null;
             }
         }).then((response) => {
-            console.log(".then(response) - response" + JSON.stringify(response));
+            if(response)
+                response1 = response;
+            console.log(`.then location: ${location}`);
+            if(location)
+                return gmapi.geocode({address: location, components: {country: "CA", locality: "kingston"}}).asPromise();
+            else{
+                return null;
+            }
+        }).then((response2) => {
+            console.log(".then(response) - response1" + JSON.stringify(response1));
+            console.log(".then(response) - response2" + JSON.stringify(response2));
             console.log(".then(response) - loc" + location);
-            var result = response.json.results[0];
-            console.log(_.has(result, "geometry.location.lat"));
-            console.log(_.has(result, "geometry.location.lng"));
-            if(location && response && _.has(result, "geometry.location.lat") && _.has(result, "geometry.location.lng")) {
-                var curLatLong=[response.json.results[0].geometry.location.lat,response.json.results[0].geometry.location.lng];
+
+            var result1 = response1.json.results[0];
+            var result2 = response2.json.results[0];
+
+            if(location && _.has(result1, "geometry.location.lat") && _.has(result1, "geometry.location.lng") && _.has(result2, "geometry.location.lat") && _.has(result2, "geometry.location.lng")) {
+                var curLatLong=[result1.geometry.location.lat, result1.geometry.location.lng];
+                var dstLatLong=[result2.geometry.location.lat, result2.geometry.location.lng];
                 var route = "4";
                 var stop = "Union Street (West of University)";
                 var time = "3 PM";
