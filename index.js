@@ -259,6 +259,177 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
     }
 }
 
+function WhenToLeave(intent, deviceId, apiAccessToken, session, callback)
+{
+    let cardTitle = intent.name;
+    const locationSlot = intent.slots.location;
+    const timeSlot= intent.slots.time;
+    let shouldEndSession = true;
+    let speechOutput = '';
+    let repromptText = '';
+    var shouldSendAuth = false;
+    
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1;
+    var month;
+    if(mm==0){
+    month ='Jan';
+    }   
+    else if(mm==1){
+    month='Feb';
+    }
+    else if(mm==2){
+    month='Mar';
+    }
+    else if(mm==3){
+    month='Apr';
+    }
+    else if(mm==4){
+    month='May';
+    }
+    else if(mm==5){
+    month='Jun';
+    }
+    else if(mm==6){
+    month='Jul';
+    }
+    else if(mm==7){
+    month='Aug';
+    }
+    else if(mm==8){
+    month='Sep';
+    }
+    else if(mm==9){
+    month='Oct';
+    }
+    else if(mm==10){
+    month='Nov';
+    }
+    else if(mm==11){
+    month='Dec';
+    }
+    var yyyy = today.getFullYear();
+    
+    var dateAndTime= '${yyyy}-${month}-${dd}T${timeSlot.value}';
+    var inputTimeUnix= ((Date.parse(dateAndTime))/1000);
+
+   console.log("gnbt");  
+
+    if(locationSlot && locationSlot.value && timeSlot && timeSlot.value) {
+        var location = locationSlot.value;
+        var response1;
+        new Promise(
+            (resolve, reject) => {
+                console.log("prom");
+                loc(deviceId, apiAccessToken, (result) => {
+                    var currentLocation;
+                    var type = typeof result;
+                    console.log("type: " + type);
+                    if(type == "string") { //real location!
+                        currentLocation = result;
+                        resolve(currentLocation);
+                    }else if(type == "number") { //bad, try authenticating
+                        console.log("first promise res: " + result);
+                        if(result == 403) { //need to send auth card
+                            shouldSendAuth = true;
+                            resolve();
+                        }
+                    }
+                })  
+        }).then((currentLocation) => {
+            console.log(`.then currentLocation: ${currentLocation}`);
+            if(currentLocation)
+                return gmapi.geocode({address: currentLocation}).asPromise();
+            else{
+                return null;
+            }
+        }).then((response) => {
+            if(response)
+                response1 = response;
+            console.log(`.then location: ${location}`);
+            if(location)
+                return gmapi.geocode({address: location, components: {country: "CA", locality: "kingston"}}).asPromise();
+            else{
+                return null;
+            }
+        }).then((response2) => {
+            console.log(".then(response) - response1" + JSON.stringify(response1));
+            console.log(".then(response) - response2" + JSON.stringify(response2));
+            console.log(".then(response) - loc" + location);
+
+            var result1 = response1.json.results[0];
+            var result2 = response2.json.results[0];
+
+            if(location && _.has(result1, "geometry.location.lat") && _.has(result1, "geometry.location.lng") && _.has(result2, "geometry.location.lat") && _.has(result2, "geometry.location.lng")) {
+                var curLatLong=[result1.geometry.location.lat, result1.geometry.location.lng];
+                var dstLatLong=[result2.geometry.location.lat, result2.geometry.location.lng];
+
+                return [curLatLong, dstLatLong];
+            }else{
+                return null;
+            }
+        }).then((locs) => {
+            if(locs){
+                var request = {
+                    origin: locs[0],
+                    destination: locs[1],
+                    mode: "transit",
+                    arrival_time: inputTimeUnix
+                    };
+                return gmapi.directions(request).asPromise();
+
+            }else{
+                return null;
+            }
+        }).then((response) => {
+            console.log(JSON.stringify(response));
+            if(response){
+                var steps = response.json.routes[0].legs[0].steps;
+                var idx = 0;
+                while(idx < steps.length && steps[idx].travel_mode != "TRANSIT"){
+                    idx++;
+                }
+                if(idx >= steps.length){
+                    cardTitle = "Bus To " + location;
+                    speechOutput = "The destination you requested has no available transit route.";
+                }else{
+                    var routeDetails = steps[idx].transit_details;
+                    var destinationStopName= routeDetails.arrival_stop.name;
+                    var startingStopName=routeDetails.departure_stop.name;
+                    var arrivalTime=routeDetails.arrival_time.value;
+                    var departureTime=routeDetails.departure_time.text;
+                    var transitLine=routeDetails.line.short_name;
+                        
+                    cardTitle = "Bus To " + location;
+                    speechOutput = `The next bus to ${location} is the ${transitLine} from ${startingStopName} at ${departureTime}.`;
+                }
+                
+            }else{
+                cardTitle = "Bus To";
+                speechOutput =  "Sorry, I encountered an error when determining your requested locations. semicolon right paren";
+            }                    
+        }).then(() => {
+            console.log("last then");
+            if(shouldSendAuth){
+                console.log("should send auth");
+                var card = buildLocationPermissionResponseCard();
+                var speech = buildSpeechletResponseSpeech("PlainText", "To do that, please open your Alexa app and grant location permission using the card I just sent you!", "PlainText", "");
+                callback({}, buildCustomSpeechletResponse(card, speech));
+            }
+            else{
+                console.log("regular callback");
+                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+            }
+            return;
+        }).catch((err) => {
+            if(err)
+                console.log(err);
+            callback({}, buildSpeechletResponse("Nope", "Something went wrong yo.", "", true));
+        });
+    }
+}
+
 // ------------------ Slot Collection Handlers -----------------------
 // Handlers based off of https://github.com/alexa/alexa-cookbook/blob/master/handling-responses/dialog-directive-delegate/sample-nodejs-plan-my-trip/src/SampleWithoutTheSDK.js
 
