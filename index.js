@@ -402,7 +402,7 @@ function WhenToLeave(intent, deviceId, apiAccessToken, session, callback)
                     var transitLine=routeDetails.line.short_name;
                         
                     cardTitle = "Bus To " + location;
-                    speechOutput = `The next bus to ${location} is the ${transitLine} from ${startingStopName} at ${departureTime}.`;
+                    speechOutput = `Leave at ${departureTime} and take bus ${transitLine} from ${startingStopName} to arrive at ${arrivalTime}';
                 }
                 
             }else{
