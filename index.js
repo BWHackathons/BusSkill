@@ -12,6 +12,8 @@ const gmapi = require('@google/maps').createClient({
     Promise: Promise
 });
 
+const sms = require('helpers/SMS');
+
 // --------------- Helpers that build all of the responses -----------------------
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
@@ -132,9 +134,6 @@ function getHelpResponse(callback)
         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-/**
- * Responds to user requests for a color code computation
- */
 function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
 {
     let cardTitle = intent.name;
@@ -236,7 +235,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                 
             }else{
                 cardTitle = "Bus To";
-                speechOutput =  "Sorry, I encountered an error when determining your requested locations. semicolon right paren";
+                speechOutput =  "Sorry, I encountered an error when determining your requested locations.";
             }                    
         }).then(() => {
             console.log("last then");
@@ -430,6 +429,132 @@ function WhenToLeave(intent, deviceId, apiAccessToken, session, callback)
     }
 }
 
+function getRouteSteps(intent, deviceId, apiAccessToken, session, callback)
+{
+    let cardTitle = intent.name;
+    const locationSlot = intent.slots.location;
+    const phoneSlot = intent.slots.phone;
+    let shouldEndSession = true;
+    let speechOutput = '';
+    var speechType = "PlainText";
+    let repromptText = '';
+    var shouldSendAuth = false;
+
+    console.log("gnbt");  
+
+    if(locationSlot && locationSlot.value && phoneSlot && phoneSlot.value) {
+        var location = locationSlot.value;
+        var response1;
+        new Promise(
+            (resolve, reject) => {
+                console.log("prom");
+                loc(deviceId, apiAccessToken, (result) => {
+                    var currentLocation;
+                    var type = typeof result;
+                    console.log("type: " + type);
+                    if(type == "string") { //real location!
+                        currentLocation = result;
+                        resolve(currentLocation);
+                    }else if(type == "number") { //bad, try authenticating
+                        console.log("first promise res: " + result);
+                        if(result == 403) { //need to send auth card
+                            shouldSendAuth = true;
+                            resolve();
+                        }
+                    }
+                })  
+        }).then((currentLocation) => {
+            console.log(`.then currentLocation: ${currentLocation}`);
+            if(currentLocation)
+                return gmapi.geocode({address: currentLocation}).asPromise();
+            else{
+                return null;
+            }
+        }).then((response) => {
+            if(response)
+                response1 = response;
+            console.log(`.then location: ${location}`);
+            if(location)
+                return gmapi.geocode({address: location, components: {country: "CA", locality: "kingston"}}).asPromise();
+            else{
+                return null;
+            }
+        }).then((response2) => {
+            console.log(".then(response) - response1" + JSON.stringify(response1));
+            console.log(".then(response) - response2" + JSON.stringify(response2));
+            console.log(".then(response) - loc" + location);
+
+            var result1 = response1.json.results[0];
+            var result2 = response2.json.results[0];
+
+            if(location && _.has(result1, "geometry.location.lat") && _.has(result1, "geometry.location.lng") && _.has(result2, "geometry.location.lat") && _.has(result2, "geometry.location.lng")) {
+                var curLatLong=[result1.geometry.location.lat, result1.geometry.location.lng];
+                var dstLatLong=[result2.geometry.location.lat, result2.geometry.location.lng];
+
+                return [curLatLong, dstLatLong];
+            }else{
+                return null;
+            }
+        }).then((locs) => {
+            if(locs){
+                var request = {
+                    origin: locs[0],
+                    destination: locs[1],
+                    mode: "transit"
+                    };
+                return gmapi.directions(request).asPromise();
+
+            }else{
+                return null;
+            }
+        }).then((response) => {
+            console.log(JSON.stringify(response));
+            if(response){
+                var steps = response.json.routes[0].legs[0].steps;
+                var output = "Bus Pal:\n";
+                for(var i=0; i<steps.length; i++) {
+                    output += (i+1) + ". " + steps[i].html_instructions.replace(/<(?:.|\n)*?>/gm, '') + "\n";
+                }
+
+                return sms(phoneSlot.value, output).then(() => {
+                    cardTitle = "Steps to " + location;
+                    speechType = "SSML";
+                    speechOutput = `<ssml>The next steps to get to ${location} have been sent to <say-as interpret-as='telephone'>${phoneSlot.value}</say-as>.</ssml>`;
+                }).catch(() => {
+                    cardTitle = "Steps to " + location;
+                    speechOutput = `Sorry, the next steps to get to ${location} could not be sent to ${phoneSlot.value}.`;
+
+                });   
+                
+            }else{
+                cardTitle = "Route Steps";
+                speechOutput =  "Sorry, I encountered an error when determining your requested locations.";
+            }                    
+        }).then(() => {
+            console.log("last then");
+            if(shouldSendAuth){
+                console.log("should send auth");
+                var card = buildLocationPermissionResponseCard();
+                var speech = buildSpeechletResponseSpeech("PlainText", "To do that, please open your Alexa app and grant location permission using the card I just sent you!", "PlainText", "");
+                var out = buildCustomSpeechletResponse(card, speech);
+                console.log(JSON.stringify(out));
+                callback({}, out);
+            }
+            else{
+                console.log("regular callback");
+                var card = buildSpeechletResponseCard("Standard", cardTitle, speechOutput, null);
+                var speech = buildSpeechletResponseSpeech(speechType, speechOutput, "PlainText", repromptText);
+                callback({}, buildCustomSpeechletResponse(card, speech, shouldEndSession));
+            }
+            return;
+        }).catch((err) => {
+            if(err)
+                console.log(err);
+            callback({}, buildSpeechletResponse("Nope", "Something went wrong yo.", "", true));
+        });
+    }
+}
+
 // ------------------ Slot Collection Handlers -----------------------
 // Handlers based off of https://github.com/alexa/alexa-cookbook/blob/master/handling-responses/dialog-directive-delegate/sample-nodejs-plan-my-trip/src/SampleWithoutTheSDK.js
 
@@ -507,14 +632,14 @@ function onIntent(request, intentRequest, session, callback) {
         var deviceId = request.context.System.device.deviceId;
         var apiKey = request.context.System.apiAccessToken;
         getNextBusTo(intent, deviceId, apiKey, session, callback);
-    } else if (intentName === 'NextBusAtStop') {
-        getHelpResponse(callback)
     } else if (intentName === 'Settings') {
         getHelpResponse(callback)
     } else if (intentName === 'RouteOptions') {
         getHelpResponse(callback)
     } else if(intentName === 'GetRouteSteps'){
-        getHelpResponse(callback);
+        var deviceId = request.context.System.device.deviceId;
+        var apiKey = request.context.System.apiAccessToken;
+        getRouteSteps(intent, deviceId, apiKey, session, callback);
     }else if(intentName === 'GetBusAtTime'){
         getHelpResponse(callback);
     } else if(intentName === 'WhenToLeave'){
