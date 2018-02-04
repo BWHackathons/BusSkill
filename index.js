@@ -176,10 +176,11 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
         }).then((response) => {
             console.log(".then(response) - response" + JSON.stringify(response));
             console.log(".then(response) - loc" + location);
-            console.log(_.has(response, "json.results.geometry.location.lat"));
-            console.log(_.has(response, "json.results.geometry.location.lng"));
-            if(location && response && _.has(response, "json.results.geometry.location.lat") && _has(response, "json.results.geometry.location.lng")) {
-                var curLatLong=[response.json.results.geometry.location.lat,response.json.results.geometry.location.lng];
+            var result = response.json.results[0];
+            console.log(_.has(result, "geometry.location.lat"));
+            console.log(_.has(result, "geometry.location.lng"));
+            if(location && response && _.has(result, "geometry.location.lat") && _.has(result, "geometry.location.lng")) {
+                var curLatLong=[response.json.results[0].geometry.location.lat,response.json.results[0].geometry.location.lng];
                 var route = "4";
                 var stop = "Union Street (West of University)";
                 var time = "3 PM";
