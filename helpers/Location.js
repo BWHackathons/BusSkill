@@ -16,6 +16,7 @@ module.exports = (deviceId, authKey, callback) => {
 			callback(error);
 
 		if(response.statusCode == 200) { //OK
+			body = JSON.parse(body);
 			var addr = body.addressLine1 + " ";
 			if(body.addressLine2)
 				addr += body.addressLine2 + " ";

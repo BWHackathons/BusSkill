@@ -8,7 +8,8 @@ var _ = require('lodash');
 const loc = require('helpers/Location');
 const request = require('request');
 const gmapi = require('@google/maps').createClient({
-    key: KEYS.gapi
+    key: KEYS.gapi,
+    Promise: Promise
 });
 
 // --------------- Helpers that build all of the responses -----------------------
@@ -158,7 +159,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                         currentLocation = result;
                         resolve(currentLocation);
                     }else if(type == "number") { //bad, try authenticating
-                        console.log(result);
+                        console.log("first promise res: " + result);
                         if(result == 403) { //need to send auth card
                             shouldSendAuth = true;
                             resolve();
@@ -166,13 +167,18 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                     }
                 })  
         }).then((currentLocation) => {
-            if(!currentLocation)
-                return;
-        }).then((currentLocation) => {       
-           return gmapi.geocode(response).asPromise()
-            console.log(location);
-            if(location) {
-                //TODO: Google API Calls HERE
+            console.log(`.then currentLocation: ${currentLocation}`);
+            if(currentLocation)
+                return gmapi.geocode({address: currentLocation}).asPromise();
+            else{
+                return null;
+            }
+        }).then((response) => {
+            console.log(".then(response) - response" + JSON.stringify(response));
+            console.log(".then(response) - loc" + location);
+            console.log(_.has(response, "json.results.geometry.location.lat"));
+            console.log(_.has(response, "json.results.geometry.location.lng"));
+            if(location && response && _.has(response, "json.results.geometry.location.lat") && _has(response, "json.results.geometry.location.lng")) {
                 var curLatLong=[response.json.results.geometry.location.lat,response.json.results.geometry.location.lng];
                 var route = "4";
                 var stop = "Union Street (West of University)";
@@ -190,7 +196,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                 
             }else {
                 cardTitle = "Bus To";
-                speechOutput =  "Sorry, I need a destination to do that.";
+                speechOutput =  "Sorry, I encountered an error when determining your requested locations. semicolon right paren";
                 return;
             }
         }).then(() => {
