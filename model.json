@@ -1,0 +1,615 @@
+{
+  "languageModel": {
+    "types": [
+      {
+        "name": "location",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "four union street",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "five palmer road",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "eight albert boulevard",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "nine alfred avenue",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "eleven university street",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "nine-hundred eleven clergy road",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "three-hundred nine west boulevard",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "six-hundred seventy-two bader crescent",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "two-hundred forty-five frontenac lane",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "two-thousand seventy earl street",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "three-thousand forty-nine johnson road",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "seven-thousand ninety-nine brock avenue",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "eleven-thousand forty-four indian road",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "seventeen-thousand eight-hundred four queen crescent",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "fourteen-thousand eight-hundred ten king lane",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "beamish-munro hall",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "dupuis hall",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "jeffrey hall",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "athletics and recreation centre",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "student life centre",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "kingston general hospital",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "toronto general hospital",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "reference library",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "stauffer library",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "douglas library",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "leonard hall",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "joe's pub",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "stages nightclub",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "brass bar",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "only pub",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "bar with no name",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "union nightclub",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "rebel nightclub",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "metro grocery store",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "food basics grocery store",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "wall mart",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "supermarket",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "movie theatre",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "swimming pool",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "community center",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "barber shop",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "skating rink",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "bowling alley",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "cafe",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "park",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "field",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "university",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "college",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "LCBO",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "Beer Store",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "wine rack",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "canadian tire",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "beach",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "victoria and union",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "princess and division street",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "union and university",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "johnson and frontenac",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "aberdeen and earl",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "brock street and albert street",
+              "synonyms": []
+            }
+          }
+        ]
+      },
+      {
+        "name": "phone",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "6131234567",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "16131234567",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "14065554326",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "4163076845",
+              "synonyms": []
+            }
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "NextBusTo",
+        "samples": [
+          "when is the next bus to {location}",
+          "when's the next bus to {location}",
+          "what is the next bus to {location}",
+          "what's the next bus to {location}",
+          "next bus to {location}",
+          "bus to {location}",
+          "to {location}",
+          "travel to {location}",
+          "go to {location}",
+          "how do I get to {location}",
+          "how do I go to {location}",
+          "how to get to {location}",
+          "next train to {location}",
+          "what's the next train to {location}",
+          "what is the next train to {location} ",
+          "train to {location}",
+          "what is the next streetcar to {location}",
+          "what's the next streetcar to {location}",
+          "next streetcar to {location}",
+          "streetcar to {location}",
+          "what is the next subway to {location}",
+          "what's the next subway to {location}",
+          "next subway to {location}",
+          "subway to {location}",
+          "when the next bus to {location} is",
+          "for the next bus to {location}"
+        ],
+        "slots": [
+          {
+            "name": "location",
+            "type": "location",
+            "samples": [
+              "{location}",
+              "my destination is {location}",
+              "destination is {location}",
+              "it is {location}",
+              "it's {location}",
+              "I'm going to {location}",
+              "I am going to {location}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GetRouteSteps",
+        "samples": [
+          "send instructions to get to {location} to {phone}",
+          "tell {phone} how to get to {location}",
+          "text {phone} the busing information to get to {location}",
+          "text {phone} the bus information to get to {location}",
+          "text {phone} the busing steps to get to {location}",
+          "text {phone} the bus steps to get to {location}",
+          "tell {phone} the steps to get to {location} by bus",
+          "send {phone} the steps to get to {location} by bus"
+        ],
+        "slots": [
+          {
+            "name": "location",
+            "type": "location"
+          },
+          {
+            "name": "phone",
+            "type": "phone"
+          }
+        ]
+      },
+      {
+        "name": "WhenToLeave",
+        "samples": [
+          "when should I leave to get to {location} by {time}",
+          "what time should i leave at to get to {location} at {time}",
+          "when should i go at to get to {location} by {time}",
+          "what time should I go at to get to {location} by {time} ",
+          "when should i go to get to {location} at {time}",
+          "what time should i go to get to {location}  by {time}",
+          "when do i need to leave to go to {location} at {time}",
+          "what time should i leave at to go to {location} by {time}",
+          "when do i need to leave at to go to {location} by {time}",
+          "what time should i leave to go to {location} by {time}",
+          "when do i need to leave to get to {location} at {time}",
+          "what do i need to leave at to get to {location} by {time}",
+          "what time should i leave to get to {location} at {time}",
+          "{time} go to {location}"
+        ],
+        "slots": [
+          {
+            "name": "location",
+            "type": "location"
+          },
+          {
+            "name": "time",
+            "type": "AMAZON.TIME"
+          }
+        ]
+      }
+    ],
+    "invocationName": "bus pal"
+  },
+  "prompts": [
+    {
+      "id": "Elicit.Intent-NextBusTo.IntentSlot-location",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What is your destination?"
+        }
+      ]
+    },
+    {
+      "id": "Confirm.Intent-NextBusTo.IntentSlot-location",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Your destination is {location}?"
+        },
+        {
+          "type": "PlainText",
+          "value": "You are travelling to {location}?"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "intents": [
+      {
+        "name": "NextBusTo",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "location",
+            "type": "location",
+            "elicitationRequired": true,
+            "confirmationRequired": true,
+            "prompts": {
+              "elicitation": "Elicit.Intent-NextBusTo.IntentSlot-location",
+              "confirmation": "Confirm.Intent-NextBusTo.IntentSlot-location"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
