@@ -146,7 +146,7 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
     console.log("gnbt");  
 
     if(locationSlot && locationSlot.value) {
-        var location = locationSlot.value;
+        var location = locationSlot.value + ", Kingston, ON, Canada";
         var response1;
         new Promise(
             (resolve, reject) => {
@@ -229,8 +229,8 @@ function getNextBusTo(intent, deviceId, apiAccessToken, session, callback)
                     var departureTime=routeDetails.departure_time.text;
                     var transitLine=routeDetails.line.short_name;
                         
-                    cardTitle = "Bus To " + location;
-                    speechOutput = `The next bus to ${location} is the ${transitLine} from ${startingStopName} at ${departureTime}.`;
+                    cardTitle = "Bus To " + locationSlot.value;
+                    speechOutput = `The next bus to ${locationSlot.value} is the ${transitLine} from ${startingStopName} at ${departureTime}.`;
                 }
                 
             }else{
@@ -270,7 +270,7 @@ function getWhenToLeave(intent, deviceId, apiAccessToken, session, callback)
     
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1;
+    var mm = today.getMonth();
     var month;
     if(mm==0){
     month ='Jan';
@@ -310,13 +310,19 @@ function getWhenToLeave(intent, deviceId, apiAccessToken, session, callback)
     }
     var yyyy = today.getFullYear();
     
-    var dateAndTime= '${yyyy}-${month}-${dd}T${timeSlot.value}';
+    var tz = '-05:00';
+    var fd = '0' + dd;
+    fd = fd.slice(-2);
+
+    var dateAndTime = `${fd} ${month} ${yyyy} ${timeSlot.value} UTC${tz}`
     var inputTimeUnix= ((Date.parse(dateAndTime))/1000);
+    console.log("dat: " + dateAndTime);
+    console.log("ut: " + inputTimeUnix);
 
    console.log("gnbt");  
 
     if(locationSlot && locationSlot.value && timeSlot && timeSlot.value) {
-        var location = locationSlot.value;
+        var location = locationSlot.value + ", Kingston, ON, Canada";
         var response1;
         new Promise(
             (resolve, reject) => {
@@ -396,17 +402,22 @@ function getWhenToLeave(intent, deviceId, apiAccessToken, session, callback)
                     var routeDetails = steps[idx].transit_details;
                     var destinationStopName= routeDetails.arrival_stop.name;
                     var startingStopName=routeDetails.departure_stop.name;
-                    var arrivalTime=routeDetails.arrival_time.value;
+                    var arrivalTimeRaw = (routeDetails.arrival_time.value)*1000;
+                    var arrivalTimeStamp=Date.parse(arrivalTimeRaw);
+                    console.log(arrivalTimeRaw);
+                    console.log(arrivalTimeStamp);
+                    //var arrivalTime = (arrivalTimeStamp.getHours()>12?(arrivalTimeStamp.getHours()-12 + ":" + arrivalTimeStamp.getMinutes() + " PM"):(arrivalTimeStamp.getHours() + ":" + arrivalTimeStamp.getMinutes() + " AM"));
+                    //var arrivalTime = arrivalTimeStamp.getHours() + ":" + arrivalTimeStamp.getMinutes();
                     var departureTime=routeDetails.departure_time.text;
                     var transitLine=routeDetails.line.short_name;
                         
                     cardTitle = "Bus To " + location;
-                    speechOutput = `Leave at ${departureTime} and take bus ${transitLine} from ${startingStopName} to arrive at ${arrivalTime}';
+                    speechOutput = `Leave at ${departureTime} and take bus ${transitLine} from ${startingStopName} to arrive by ${timeSlot.value}`;
                 }
                 
             }else{
                 cardTitle = "Bus To";
-                speechOutput =  "Sorry, I encountered an error when determining your requested locations. semicolon right paren";
+                speechOutput =  "Sorry, I encountered an error when determining your requested locations.";
             }                    
         }).then(() => {
             console.log("last then");
@@ -651,7 +662,7 @@ function onIntent(request, intentRequest, session, callback) {
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
         handleSessionEndRequest(callback);
     } else {
-        throw new Error('Invalid intent');
+        throw new Error('Invalid intent: ' + intentName);
     }
 }
 
