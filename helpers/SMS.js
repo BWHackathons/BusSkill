@@ -1,28 +1,16 @@
-var AWS = require('aws-sdk');
-const KEYS = require('../keys')
-
-AWS.config.update({
-	accessKeyId: KEYS.awsAccess,
-	secretAccessKey: KEYS.awsSecret,
-	region: 'us-east-1'
-	});
+const KEYS = require('../keys');
+const twilio = require('twilio')(KEYS.twilioSID, KEYS.twilioToken);
 
 module.exports = (phone, message) => {
-	
-	return new Promise(
-		(resolve, reject) => {
-			var sns = new AWS.SNS();
-			sns.publish({
-					Message: message,
-					PhoneNumber: phone
-				}, function (err, data) {
-					if (err) {
-						console.log(err.stack);
-						reject();
-					return;
-				}
-				console.log("Message Sent");
-				resolve();
+	phone = phone.trim();
+    if(!phone.startsWith("+1"))
+        phone = "+1" + phone;
+    if(phone.length !== 11)
+        return;
+
+	return twilio.messages.create({
+                body: message,
+                to: phone,
+                from: KEYS.twilioNum
 			});
-		});
-}
+};
